@@ -1,5 +1,6 @@
 let humanScore = 0;
 let computerScore = 0;
+let toggle = false;
 
 function getComputerChoice() {
     //rand picks a random number from 0 to 2
@@ -47,52 +48,71 @@ function playGame(){
 }
 
 function playRound(humanChoice, computerChoice){
+    let result = "";
+    let msg = "";
     if(humanChoice == 'rock'){
         if (computerChoice == 'scissors'){
-            console.log("You win! Rock beats Scissors"); 
+            result = "You win!";
+            msg =  "Rock beats Scissors";
             humanScore++;
         }
         else if (computerChoice == 'paper'){
-            console.log("You lose. Rock loses to Paper");
+            result = "You lost.";
+            msg =  "Rock loses to Paper";
             computerScore++;
         }
         else{
-            console.log("Tie");
+            result = "Tie.";
+            msg = "You both picked rock!";
         }
     }
     else if(humanChoice == 'paper'){
         if (computerChoice == 'rock'){
-            console.log("You win! Paper beats Rock");
+            result = "You win!";
+            msg = " Paper beats Rock";
             humanScore++;
         }
         else if (computerChoice == 'scissors'){
-            console.log("You lose. Paper loses to Scissors");
+            result = "You lose.";
+            msg = "Paper loses to Scissors";
             computerScore++;
         }
         else{
-            console.log("Tie"); 
+            result = "Tie.";
+            msg = "You both picked paper!"
         }
     }
     else if (humanChoice == 'scissors'){
         if (computerChoice == 'paper'){
-            console.log("You win! Scissors beats Paper");
+            result = "You win!";
+            msg = "Scissors beats Paper";
             humanScore++;
         }
         else if (computerChoice == 'rock'){
-            console.log("You lose. Scissors loses to Rock");
+            result = "You lose.";
+            msg = "Scissors loses to Rock";
             computerScore++;
         }
         else {
-            console.log("Tie");
+            result = "Tie.";
+            msg = "You both picked scissors!"
         }
     }
+    return [result, msg];
 }
 
 //playGame();
 
 function displayScore(){
-    document.querySelector("#human").textContent = "Human Score: " + humanScore;
-    document.querySelector("#computer").textContent = "Computer Score: " + computerScore;
+    document.querySelector("#human").textContent = "Player: " + humanScore;
+    document.querySelector("#computer").textContent = "Computer: " + computerScore;
+}
+
+function toggleHidden(){
+    const elements = document.querySelectorAll(".hidden");
+    elements.forEach((element) => {
+        element.classList.toggle("hidden");
+    });
 }
 
 let button = document.querySelector("#btn");
@@ -100,6 +120,7 @@ button.addEventListener("click", (event) => {
     let target = event.target;
     let human_choice = "";
     let computer_choice = getComputerChoice();
+    
 
     switch(target.id){
         case 'rock':
@@ -114,8 +135,36 @@ button.addEventListener("click", (event) => {
             human_choice = "scissors";
             break;
     }   
-    playRound(human_choice, computer_choice);
+    let result = playRound(human_choice, computer_choice);
     displayScore();
-    if(humanScore == 5) document.querySelector("#win-msg").textContent = "You win!";
-    if(computerScore == 5) document.querySelector("#win-msg").textContent = "Computer wins!";
+    document.querySelector("#result").textContent = result[0];
+    document.querySelector("#msg").textContent = result[1];
+    if(humanScore == 5 && !toggle){
+        document.querySelector("#win-msg").textContent = "You win!";
+        toggle = true;
+        toggleHidden();
+        
+    } 
+    if(computerScore == 5 && !toggle){
+        document.querySelector("#win-msg").textContent = "Computer wins!";
+        toggle = true;
+        toggleHidden();
+        
+    } 
+
 });
+
+let reset = document.querySelector("#reset");
+let win_msg = document.querySelector("#win-msg");
+    reset.addEventListener("click", () => {
+      humanScore = 0;
+      computerScore = 0;
+      document.querySelector("#result").textContent = "Choose Rock Paper or Scissors";
+
+      toggle = false;
+      displayScore();
+      reset.classList.toggle("hidden");
+      win_msg.classList.toggle("hidden");
+    
+    });
+  
